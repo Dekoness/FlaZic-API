@@ -2,23 +2,27 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
-from app.database import get_db, create_tables
-from app.config import settings
+from app.database import get_db
+from app.routes.auth import router as auth_router
+from app.database import create_tables
+
 
 
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: código que se ejecuta al iniciar la app
     print("🚀 Iniciando FLAZIC-API...")
-    
-    # Aquí irá la conexión a la base de datos después
     print("✅ FLAZIC-API lista para recibir peticiones")
     
-    yield  # La app está corriendo aquí
+    try:
+        create_tables()
+        print("✅ Tablas creadas exitosamente")
+    except Exception as e:
+        print(f"❌ Error creando tablas: {e}")
     
-    # Shutdown: código que se ejecuta al detener la app  
+    print("🎵 FLAZIC-API lista para recibir peticiones")
+    yield
     print("🔌 Cerrando FLAZIC-API...")
 
 # Crear aplicación FastAPI
@@ -30,6 +34,9 @@ app = FastAPI(
     redoc_url="/redoc",  # Redoc en /redoc
     lifespan=lifespan
 )
+
+app.include_router(auth_router)
+
 
 # Configurar CORS (para conectar con frontend)
 app.add_middleware(
@@ -64,3 +71,4 @@ async def db_test(db: Session = Depends(get_db)):
     """Prueba que la base de datos funciona"""
     # db es tu "ayudante de cocina" listo para trabajar
     return {"message": "✅ Base de datos conectada", "db_type": str(type(db))}
+

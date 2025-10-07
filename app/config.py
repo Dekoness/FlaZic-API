@@ -14,7 +14,7 @@ class Settings:
     APP_NAME = os.getenv("APP_NAME", "FLAZIC-API")
     DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 
-    HOST = os.getenv("HOST", "0.0.0.0")
+    HOST = os.getenv("HOST", "127.0.0.1")
     PORT = int(os.getenv("PORT", 3001))
 
 settings = Settings()

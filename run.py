@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 if __name__ == "__main__":
-    host = os.getenv("HOST", "0.0.0.0")
-    port = int(os.getenv("PORT", 3001))
+    host = os.getenv("HOST")
+    port = int(os.getenv("PORT"))
     
     print("🎵 Iniciando FLAZIC-API...")
     print(f"📍 Servidor: {host}:{port}")
