@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean
 from sqlalchemy.sql import func
 from app.database import Base
-
+from sqlalchemy.orm import relationship
 
 class User(Base):
     
@@ -17,6 +17,8 @@ class User(Base):
     website_url = Column(String(500))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    tracks = relationship("Track", back_populates="artist", cascade="all, delete-orphan")
+    social_links = relationship("SocialLink", back_populates="artist", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User {self.username} ({self.email})"
