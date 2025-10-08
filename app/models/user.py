@@ -19,6 +19,7 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     tracks = relationship("Track", back_populates="artist", cascade="all, delete-orphan")
     social_links = relationship("SocialLink", back_populates="artist", cascade="all, delete-orphan")
+    events = relationship("Event", back_populates="organizer", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User {self.username} ({self.email})"
