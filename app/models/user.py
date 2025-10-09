@@ -3,6 +3,9 @@ from sqlalchemy.sql import func
 from app.database import Base
 from sqlalchemy.orm import relationship
 
+from app.models.follower import Follower
+from app.models.notification import Notification
+
 class User(Base):
     
     __tablename__ = "users"
@@ -20,6 +23,24 @@ class User(Base):
     tracks = relationship("Track", back_populates="artist", cascade="all, delete-orphan")
     social_links = relationship("SocialLink", back_populates="artist", cascade="all, delete-orphan")
     events = relationship("Event", back_populates="organizer", cascade="all, delete-orphan")
+    likes = relationship("Like", back_populates="user", cascade="all, delete-orphan")
+    comments = relationship("Comment", back_populates="author", cascade="all, delete-orphan")
+
+    notifications_received = relationship("Notification",  foreign_keys=[Notification.user_id], 
+                                          back_populates="recipient",
+                                          cascade="all, delete-orphan")
+    notifications_sent = relationship("Notification",
+                                        foreign_keys=[Notification.from_user_id],
+                                        back_populates="sender",
+                                        cascade="all, delete-orphan")
+
+    followers = relationship("Follower", foreign_keys=[Follower.following_id], 
+                            back_populates="following",
+                            cascade="all, delete-orphan")
+    following = relationship("Follower", foreign_keys=[Follower.follower_id], 
+                            back_populates="follower",
+                            cascade="all, delete-orphan")
+    
 
     def __repr__(self):
         return f"<User {self.username} ({self.email})"

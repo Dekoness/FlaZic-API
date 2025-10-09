@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
 from app.database import get_db
+from app.routes import users
 from app.routes.auth import router as auth_router
 from app.database import create_tables
 
@@ -36,6 +37,7 @@ app = FastAPI(
 )
 
 app.include_router(auth_router)
+app.include_router(users.router)
 
 
 # Configurar CORS (para conectar con frontend)

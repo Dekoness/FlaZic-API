@@ -1,0 +1,93 @@
+📋 LISTA DE RUTAS A CREAR:
+🔐 AUTH ROUTES (Ya existe)
+POST /auth/register - Registro de usuarios
+
+POST /auth/login - Login de usuarios
+
+POST /auth/logout - Logout (simbólico)
+
+GET /auth/me - Perfil del usuario actual
+
+👤 USER ROUTES
+GET /users/ - Listar usuarios
+
+GET /users/{id} - Obtener usuario específico
+
+PUT /users/profile - Actualizar perfil
+
+GET /users/{id}/tracks - Tracks de un usuario
+
+GET /users/{id}/followers - Seguidores de un usuario
+
+GET /users/{id}/following - Usuarios que sigue
+
+🎵 TRACK ROUTES
+GET /tracks/ - Listar tracks públicos
+
+GET /tracks/{id} - Obtener track específico
+
+POST /tracks/ - Crear nuevo track
+
+PUT /tracks/{id} - Actualizar track
+
+DELETE /tracks/{id} - Eliminar track
+
+POST /tracks/{id}/like - Dar/quitar like
+
+GET /tracks/{id}/comments - Comentarios del track
+
+💬 COMMENT ROUTES
+POST /comments/ - Crear comentario
+
+GET /comments/{id} - Obtener comentario
+
+PUT /comments/{id} - Actualizar comentario
+
+DELETE /comments/{id} - Eliminar comentario
+
+GET /comments/{id}/replies - Respuestas de un comentario
+
+📚 PLAYLIST ROUTES
+GET /playlists/ - Listar playlists públicas
+
+POST /playlists/ - Crear playlist
+
+GET /playlists/{id} - Obtener playlist
+
+PUT /playlists/{id} - Actualizar playlist
+
+DELETE /playlists/{id} - Eliminar playlist
+
+POST /playlists/{id}/tracks - Agregar track a playlist
+
+🔗 SOCIAL LINKS ROUTES
+GET /users/{id}/social-links - Enlaces sociales de usuario
+
+POST /social-links/ - Agregar enlace social
+
+DELETE /social-links/{id} - Eliminar enlace social
+
+🎪 EVENT ROUTES
+GET /events/ - Listar eventos
+
+POST /events/ - Crear evento
+
+GET /events/{id} - Obtener evento
+
+PUT /events/{id} - Actualizar evento
+
+DELETE /events/{id} - Eliminar evento
+
+👥 FOLLOW ROUTES
+POST /follow/{user_id} - Seguir/dejar de seguir usuario
+
+GET /users/{id}/followers - Seguidores de usuario
+
+GET /users/{id}/following - Usuarios seguidos
+
+🔔 NOTIFICATION ROUTES
+GET /notifications/ - Notificaciones del usuario
+
+PUT /notifications/{id}/read - Marcar como leída
+
+PUT /notifications/read-all - Marcar todas como leídas

@@ -1,7 +1,13 @@
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPBearer
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
+
+from requests import Session
 from app.config import settings
+from app.database import get_db
+from app.models.user import User
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -42,3 +48,18 @@ def verify_token(token: str):
         return payload
     except JWTError:
         return None
+    
+
+def get_current_user(token: str = Depends(HTTPBearer()), db: Session = Depends(get_db)):
+    """Obtiene el usuario actual basado en el token JWT"""
+    payload = verify_token(token.credentials)
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Token inválido o expirado")
+    
+    user_id = int(payload.get("sub"))
+    user = db.query(User).filter(User.id == user_id).first()
+    
+    if user is None:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    
+    return user

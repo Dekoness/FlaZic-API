@@ -21,7 +21,8 @@ class Track(Base):
     updated_at= Column(DateTime(timezone=True), onundate=func.now())
     comments = relationship("Comment", back_populates="track", cascade="all, delete-orphan")
     playlist_tracks = relationship("PlaylistTrack", back_populates="track")
-    likes = relationship("Like", back_populates="track")
+    likes = relationship("Like", back_populates="track", cascade="all, delete-orphan")
+    comments = relationship("Comment", back_populates="track", cascade="all, delete-orphan")
 
 
     def __repr__(self):
