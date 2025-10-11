@@ -1,4 +1,4 @@
-from pydantic import BaseModel, HttpUrl, field_validator
+from pydantic import BaseModel, field_validator
 from typing import Optional
 from datetime import datetime
 from app.models.social_link import SocialLink

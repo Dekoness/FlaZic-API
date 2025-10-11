@@ -38,10 +38,10 @@ class Playlist(Base):
     # 🔗 RELACIONES
     
     # DJ que creó esta playlist
-    dj = relationship("User", back_populates="playlists")
+    # dj = relationship("User", back_populates="playlists")
     
     # Canciones incluidas en esta playlist (a través de PlaylistTrack)
-    playlist_tracks = relationship("PlaylistTrack", back_populates="playlist", cascade="all, delete-orphan")
+    # playlist_tracks = relationship("PlaylistTrack", back_populates="playlist", cascade="all, delete-orphan")
     
     def __repr__(self):
         """Cómo se muestra esta playlist en los logs"""

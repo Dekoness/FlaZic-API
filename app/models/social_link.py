@@ -4,14 +4,14 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
 
-class SocialLink(BaseModel):    
+class SocialLink(Base):    
     __tablename__ = "social_links"  # 📇 El archivador de tarjetas de contacto
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     platform = Column(String(50), nullable=False, index=True)
     url = Column(String(500), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    artist = relationship("User", back_populates="social_links")
+    # artist = relationship("User", back_populates="social_links")
 
     def __repr__(self):
         return f"<SocialLink {self.platform} for User {self.user_id}>"

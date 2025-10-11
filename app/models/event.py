@@ -48,7 +48,7 @@ class Event(Base):
     # 🔗 RELACIONES
     
     # Organizador del evento
-    organizer = relationship("User", back_populates="events")
+    # organizer = relationship("User", back_populates="events")
     
     def __repr__(self):
         """Cómo se muestra este evento en los logs"""

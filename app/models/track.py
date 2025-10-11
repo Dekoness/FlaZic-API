@@ -8,7 +8,8 @@ class Track(Base):
     __tablename__ = "tracks"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer,  ForeignKey("user.id"), nullable=False, index=True)
+    user_id = Column(Integer,  ForeignKey("users.id"), nullable=False, index=True)
+    # artist = relationship("User", back_populates="tracks", foreign_keys=[user_id])
     title = Column(String(200), nullable=False, index=True )
     description = Column(Text)
     audio_url= Column(String(500), nullable=False)
@@ -18,11 +19,11 @@ class Track(Base):
     is_public= Column(Boolean, default=True, index=True)
     play_count= Column(Integer, default=0)
     created_at= Column(DateTime(timezone=True), server_default=func.now())
-    updated_at= Column(DateTime(timezone=True), onundate=func.now())
-    comments = relationship("Comment", back_populates="track", cascade="all, delete-orphan")
-    playlist_tracks = relationship("PlaylistTrack", back_populates="track")
-    likes = relationship("Like", back_populates="track", cascade="all, delete-orphan")
-    comments = relationship("Comment", back_populates="track", cascade="all, delete-orphan")
+    updated_at= Column(DateTime(timezone=True), onupdate=func.now())
+    # comments = relationship("Comment", back_populates="track", cascade="all, delete-orphan")
+    # playlist_tracks = relationship("PlaylistTrack", back_populates="track", cascade="all, delete-orphan")
+    # likes = relationship("Like", back_populates="track", cascade="all, delete-orphan")
+
 
 
     def __repr__(self):
@@ -43,7 +44,7 @@ class Track(Base):
             "play_count": self.play_count,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
-            "artist": self.artist.to_dict() if self.artist else None
+            # "artist": self.artist.to_dict() if self.artist else None
         }
     
     def increment_play_count(self):

@@ -38,16 +38,16 @@ class Comment(Base):
     # 🔗 RELACIONES
     
     # Track comentado
-    track = relationship("Track", back_populates="comments")
+    # track = relationship("Track", back_populates="comments")
     
     # Autor del comentario
-    author = relationship("User", back_populates="comments")
+    # author = relationship("User", back_populates="comments")
     
     # Comentario padre (si es respuesta)
-    parent = relationship("Comment", remote_side=[id], back_populates="replies")
+    # parent = relationship("Comment", remote_side=[id], back_populates="replies")
     
     # Respuestas a este comentario
-    replies = relationship("Comment", back_populates="parent", cascade="all, delete-orphan")
+    # replies = relationship("Comment", back_populates="parent", cascade="all, delete-orphan")
     
     def __repr__(self):
         """Cómo se muestra este comentario en los logs"""

@@ -9,6 +9,7 @@ from app.models.notification import Notification
 class User(Base):
     
     __tablename__ = "users"
+
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, nullable=False, index=True)
     email = Column(String(100), unique=True, nullable=False, index=True)
@@ -20,26 +21,27 @@ class User(Base):
     website_url = Column(String(500))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    tracks = relationship("Track", back_populates="artist", cascade="all, delete-orphan")
-    social_links = relationship("SocialLink", back_populates="artist", cascade="all, delete-orphan")
-    events = relationship("Event", back_populates="organizer", cascade="all, delete-orphan")
-    likes = relationship("Like", back_populates="user", cascade="all, delete-orphan")
-    comments = relationship("Comment", back_populates="author", cascade="all, delete-orphan")
+    # tracks = relationship("Track", back_populates="artist", cascade="all, delete-orphan")
+    # social_links = relationship("SocialLink", back_populates="artist", cascade="all, delete-orphan")
+    # events = relationship("Event", back_populates="organizer", cascade="all, delete-orphan")
+    # likes = relationship("Like", back_populates="user", cascade="all, delete-orphan")
+    # playlists = relationship("Playlist", back_populates="dj", cascade="all, delete-orphan")
+    # comments = relationship("Comment", back_populates="author", cascade="all, delete-orphan")
 
-    notifications_received = relationship("Notification",  foreign_keys=[Notification.user_id], 
-                                          back_populates="recipient",
-                                          cascade="all, delete-orphan")
-    notifications_sent = relationship("Notification",
-                                        foreign_keys=[Notification.from_user_id],
-                                        back_populates="sender",
-                                        cascade="all, delete-orphan")
+    # notifications_received = relationship("Notification",  foreign_keys=[Notification.user_id], 
+    #                                       back_populates="recipient",
+    #                                       cascade="all, delete-orphan")
+    # notifications_sent = relationship("Notification",
+    #                                     foreign_keys=[Notification.from_user_id],
+    #                                     back_populates="sender",
+    #                                     cascade="all, delete-orphan")
 
-    followers = relationship("Follower", foreign_keys=[Follower.following_id], 
-                            back_populates="following",
-                            cascade="all, delete-orphan")
-    following = relationship("Follower", foreign_keys=[Follower.follower_id], 
-                            back_populates="follower",
-                            cascade="all, delete-orphan")
+    # followers = relationship("Follower", foreign_keys=[Follower.following_id], 
+    #                         back_populates="following",
+    #                         cascade="all, delete-orphan")
+    # following = relationship("Follower", foreign_keys=[Follower.follower_id], 
+    #                         back_populates="follower",
+    #                         cascade="all, delete-orphan")
     
 
     def __repr__(self):

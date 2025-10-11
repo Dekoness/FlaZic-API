@@ -62,6 +62,37 @@ async def get_user(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener usuario: {str(e)}")
+    
+
+@router.put("/profile", response_model=UserResponse)
+async def update_profile(
+    user_data: dict,  # Usaremos dict para flexibilidad
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    🎯 Actualizar perfil de usuario - Como editar tu información personal
+    """
+    try:
+        # Campos permitidos para actualizar
+        allowed_fields = ['display_name', 'bio', 'avatar_url', 'location', 'website_url']
+        
+        # Filtrar solo campos permitidos
+        update_data = {key: value for key, value in user_data.items() if key in allowed_fields}
+        
+        # Actualizar campos
+        for field, value in update_data.items():
+            setattr(current_user, field, value)
+        
+        db.commit()
+        db.refresh(current_user)
+        
+        return current_user
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al actualizar perfil: {str(e)}")
+    
 
 @router.get("/{user_id}/tracks", response_model=List[TrackResponse])
 async def get_user_tracks(
