@@ -67,32 +67,59 @@ Una vez ejecutada la aplicación, accede a:
 📄 Documentación Alternativa: http://localhost:3000/redoc
 
 🎯 Endpoints Principales
+
 🔐 Autenticación
+
 http
+
 POST /auth/register     # Registrar nuevo usuario
+
 POST /auth/login        # Iniciar sesión
+
 GET  /auth/me          # Perfil del usuario actual
+
 👤 Usuarios
+
 http
+
 GET  /users/           # Listar usuarios
+
 GET  /users/{id}       # Obtener usuario específico
+
 PUT  /users/profile    # Actualizar perfil propio
+
 GET  /users/{id}/tracks # Tracks del usuario
+
 🎵 Tracks Musicales
+
 http
+
 GET    /tracks/          # Listar tracks públicos
+
 POST   /tracks/          # Crear nuevo track (Artistas)
+
 PUT    /tracks/{id}      # Actualizar track
+
 DELETE /tracks/{id}      # Eliminar track
+
 POST   /tracks/{id}/like # Dar/quitar like
+
 GET    /tracks/{id}/like # Mostrar cantidad like
+
 💬 Comentarios
+
 http
+
 POST /comments/              # Crear comentario
+
 GET  /comments/{id}          # Obtener comentario
+
 PUT  /comments/{id}          # Actualizar comentario
+
 DELETE /comments/{id}        # Eliminar comentario
+
 POST  /comments/             # Crear respuesta comentario
+
 GET  /comments/{id}/replies  # Listar respuesta comentario
 
 
