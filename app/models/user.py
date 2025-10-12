@@ -21,12 +21,12 @@ class User(Base):
     website_url = Column(String(500))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    # tracks = relationship("Track", back_populates="artist", cascade="all, delete-orphan")
+    tracks = relationship("Track", back_populates="artist", cascade="all, delete-orphan")
     # social_links = relationship("SocialLink", back_populates="artist", cascade="all, delete-orphan")
     # events = relationship("Event", back_populates="organizer", cascade="all, delete-orphan")
-    # likes = relationship("Like", back_populates="user", cascade="all, delete-orphan")
+    likes = relationship("Like", back_populates="user", cascade="all, delete-orphan")
     # playlists = relationship("Playlist", back_populates="dj", cascade="all, delete-orphan")
-    # comments = relationship("Comment", back_populates="author", cascade="all, delete-orphan")
+    comments = relationship("Comment", back_populates="author", cascade="all, delete-orphan")
 
     # notifications_received = relationship("Notification",  foreign_keys=[Notification.user_id], 
     #                                       back_populates="recipient",

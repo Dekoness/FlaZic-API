@@ -26,10 +26,10 @@ class Like(Base):
     # 🔗 RELACIONES
     
     # Usuario que dio el like
-    # user = relationship("User", back_populates="likes")
+    user = relationship("User", back_populates="likes")
     
     # Track que recibió el like
-    # track = relationship("Track", back_populates="likes")
+    track = relationship("Track", back_populates="likes")
     
     # 🚫 RESTRICCIÓN ÚNICA
     # No puedes dar like al mismo track dos veces
