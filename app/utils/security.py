@@ -4,10 +4,14 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
+import os
 
 from app.config import settings
 from app.database import get_db
 from app.models.user import User
+
+# 🔐 OBTENER SALT DEL .env
+ARGON2_SALT = os.getenv("ARGON2_SALT", "default_salt_seguro_cambiar_en_produccion")
 
 # 🔐 CONFIGURACIÓN ARGON2 (más moderno y seguro que bcrypt)
 pwd_context = CryptContext(
@@ -20,12 +24,12 @@ pwd_context = CryptContext(
 )
 
 def create_password_hash(password: str) -> str:
-    """Crea hash seguro con Argon2"""
-    return pwd_context.hash(password)
+    """Crea hash seguro con Argon2 + Salt del .env"""
+    return pwd_context.hash(password + ARGON2_SALT)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verifica contraseña con Argon2"""
-    return pwd_context.verify(plain_password, hashed_password)
+    """Verifica contraseña con Argon2 + Salt del .env"""
+    return pwd_context.verify(plain_password + ARGON2_SALT, hashed_password)
 
 # 🎫 JWT (se mantiene igual)
 def create_access_token(data: dict, expires_delta: timedelta = None):
