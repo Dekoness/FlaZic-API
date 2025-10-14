@@ -36,12 +36,12 @@ class User(Base):
     #                                     back_populates="sender",
     #                                     cascade="all, delete-orphan")
 
-    # followers = relationship("Follower", foreign_keys=[Follower.following_id], 
-    #                         back_populates="following",
-    #                         cascade="all, delete-orphan")
-    # following = relationship("Follower", foreign_keys=[Follower.follower_id], 
-    #                         back_populates="follower",
-    #                         cascade="all, delete-orphan")
+    followers = relationship("Follower", foreign_keys=[Follower.following_id], 
+                            back_populates="following",
+                            cascade="all, delete-orphan")
+    following = relationship("Follower", foreign_keys=[Follower.follower_id], 
+                            back_populates="follower",
+                            cascade="all, delete-orphan")
     
 
     def __repr__(self):

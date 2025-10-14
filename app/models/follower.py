@@ -26,10 +26,10 @@ class Follower(Base):
     # 🔗 RELACIONES - Conexiones bidireccionales
     
     # El seguidor (quién sigue)
-    # follower = relationship("User", foreign_keys=[follower_id], back_populates="following")
+    follower = relationship("User", foreign_keys=[follower_id], back_populates="following")
     
     # El seguido (a quién siguen)
-    # following = relationship("User", foreign_keys=[following_id], back_populates="followers")
+    following = relationship("User", foreign_keys=[following_id], back_populates="followers")
     
     # 🚫 RESTRICCIÓN ÚNICA
     # No puedes seguir a la misma persona dos veces

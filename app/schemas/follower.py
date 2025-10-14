@@ -30,6 +30,10 @@ class FollowerResponse(FollowerBase):
     class Config:
         from_attributes = True
 
+class UnfollowResponse(FollowerBase):
+    message: str
+    user_id: int
+
 class FollowerStats(BaseModel):
     """Estadísticas de seguidores para un usuario"""
     user_id: int

@@ -39,7 +39,7 @@ app = FastAPI(
 app.include_router(auth_router)
 app.include_router(users.router)
 app.include_router(tracks.router)
-# app.include_router(follow.router)
+app.include_router(follow.router)
 app.include_router(comment.router)
 # app.include_router(playlists.router)
 # app.include_router(notifications.router)
