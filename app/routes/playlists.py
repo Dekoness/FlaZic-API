@@ -106,3 +106,63 @@ async def add_track_to_playlist(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error al agregar track: {str(e)}")
+    
+
+@router.delete("/{playlist_id}",response_model=None)
+async def delete_playlist(
+    playlist_id : int,
+    db: Session= Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    
+    try:
+
+        playlist = db.query(Playlist).filter(Playlist.id == playlist_id).first()
+        if not playlist:
+            raise HTTPException(status_code=404, detail="Playlist no encontrada")
+        
+        if playlist.user_id != current_user.id:
+            raise HTTPException(status_code=403, detail="No tienes permisos para cancelar esta playlist")
+        
+        db.delete(playlist)
+        db.commit()
+
+        return f'La playlist {playlist.title} ha sido eliminado exitosamente'
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al eliminar el track: {str(e)}")
+    
+@router.put("/{playlist_id}",response_model=PlaylistUpdate)
+async def update_playlist(
+    playlist_data : PlaylistUpdate,
+    playlist_id : int,
+    db: Session= Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    try:
+
+        # Verificar que la playlist existe y pertenece al usuario
+        playlist = db.query(Playlist).filter(Playlist.id == playlist_id).first()
+        if not playlist:
+            raise HTTPException(status_code=404, detail="Playlist no encontrada")
+        
+        if playlist.user_id != current_user.id:
+            raise HTTPException(status_code=403, detail="No tienes permisos para modificar esta playlist")
+        
+        put_playlist = playlist_data.model_dump()
+        
+        for field, value in put_playlist.items():
+            setattr(playlist, field, value)
+        
+        db.commit()
+        db.refresh(playlist)
+        
+        return playlist
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al modificar el track: {str(e)}")

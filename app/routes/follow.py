@@ -186,56 +186,56 @@ async def get_my_follow_stats(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener estadísticas: {str(e)}")
 
-# @router.get("/suggestions", response_model=List[FollowerResponse])
-# async def get_follow_suggestions(
-#     limit: int = Query(10, description="Límite de sugerencias"),
-#     db: Session = Depends(get_db),
-#     current_user: User = Depends(get_current_user)
-# ):
-#     """
-#     🎯 Obtener sugerencias de usuarios a seguir - Como descubrir nuevos artistas
-#     """
-#     try:
-#         # Usuarios que no sigues y tienen muchos seguidores
-#         suggestions = db.query(User).filter(
-#             User.id != current_user.id,
-#             ~User.id.in_(
-#                 db.query(Follower.following_id).filter(
-#                     Follower.follower_id == current_user.id
-#                 )
-#             )
-#         ).order_by(
-#             # Ordenar por popularidad (más seguidores primero)
-#             db.query(Follower).filter(Follower.following_id == User.id).count().desc()
-#         ).limit(limit).all()
+@router.get("/suggestions", response_model=List[FollowerResponse])
+async def get_follow_suggestions(
+    limit: int = Query(10, description="Límite de sugerencias"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    🎯 Obtener sugerencias de usuarios a seguir - Como descubrir nuevos artistas
+    """
+    try:
+        # Usuarios que no sigues y tienen muchos seguidores
+        suggestions = db.query(User).filter(
+            User.id != current_user.id,
+            ~User.id.in_(
+                db.query(Follower.following_id).filter(
+                    Follower.follower_id == current_user.id
+                )
+            )
+        ).order_by(
+            # Ordenar por popularidad (más seguidores primero)
+            db.query(Follower).filter(Follower.following_id == User.id).count().desc()
+        ).limit(limit).all()
         
-#         # Convertir a formato de respuesta de follower
-#         follower_responses = []
-#         for user in suggestions:
-#             follower_response = FollowerResponse(
-#                 id=0,  # No es una relación real aún
-#                 follower_id=current_user.id,
-#                 following_id=user.id,
-#                 created_at=user.created_at,
-#                 follower=current_user,
-#                 following=user
-#             )
-#             follower_responses.append(follower_response)
+        # Convertir a formato de respuesta de follower
+        follower_responses = []
+        for user in suggestions:
+            follower_response = FollowerResponse(
+                id=0,  # No es una relación real aún
+                follower_id=current_user.id,
+                following_id=user.id,
+                created_at=user.created_at,
+                follower=current_user,
+                following=user
+            )
+            follower_responses.append(follower_response)
         
-#         return follower_responses
+        return follower_responses
         
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=f"Error al obtener sugerencias: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener sugerencias: {str(e)}")
 
-# def get_relationship_status(is_following: bool, is_followed_by: bool) -> str:
-#     """
-#     🎯 Determinar el estado de la relación entre usuarios
-#     """
-#     if is_following and is_followed_by:
-#         return "mutual"  # Se siguen mutuamente
-#     elif is_following:
-#         return "following"  # Solo tú les sigues
-#     elif is_followed_by:
-#         return "follower"  # Solo ellos te siguen
-#     else:
-#         return "none"  # No hay relación
+def get_relationship_status(is_following: bool, is_followed_by: bool) -> str:
+    """
+    🎯 Determinar el estado de la relación entre usuarios
+    """
+    if is_following and is_followed_by:
+        return "mutual"  # Se siguen mutuamente
+    elif is_following:
+        return "following"  # Solo tú les sigues
+    elif is_followed_by:
+        return "follower"  # Solo ellos te siguen
+    else:
+        return "none"  # No hay relación

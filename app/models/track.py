@@ -21,7 +21,7 @@ class Track(Base):
     created_at= Column(DateTime(timezone=True), server_default=func.now())
     updated_at= Column(DateTime(timezone=True), onupdate=func.now())
     comments = relationship("Comment", back_populates="track", cascade="all, delete-orphan")
-    # playlist_tracks = relationship("PlaylistTrack", back_populates="track", cascade="all, delete-orphan")
+    playlist_tracks = relationship("PlaylistTrack", back_populates="track", cascade="all, delete-orphan")
     likes = relationship("Like", back_populates="track", cascade="all, delete-orphan")
 
 

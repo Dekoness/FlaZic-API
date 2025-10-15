@@ -25,7 +25,7 @@ class User(Base):
     # social_links = relationship("SocialLink", back_populates="artist", cascade="all, delete-orphan")
     # events = relationship("Event", back_populates="organizer", cascade="all, delete-orphan")
     likes = relationship("Like", back_populates="user", cascade="all, delete-orphan")
-    # playlists = relationship("Playlist", back_populates="dj", cascade="all, delete-orphan")
+    playlists = relationship("Playlist", back_populates="dj", cascade="all, delete-orphan")
     comments = relationship("Comment", back_populates="author", cascade="all, delete-orphan")
 
     # notifications_received = relationship("Notification",  foreign_keys=[Notification.user_id], 

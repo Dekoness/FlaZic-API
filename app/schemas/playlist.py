@@ -46,9 +46,9 @@ class PlaylistResponse(PlaylistBase):
     id: int
     user_id: int
     created_at: datetime
-    track_count: int
+    track_count: int= 0
     total_duration: Optional[int] = None
-    dj: UserResponse
+    dj: Optional[UserResponse]=None
     tracks: List[PlaylistTrackResponse] = []
     
     class Config:

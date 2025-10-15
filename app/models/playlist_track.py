@@ -30,10 +30,10 @@ class PlaylistTrack(Base):
     # 🔗 RELACIONES
     
     # Playlist a la que pertenece
-    # playlist = relationship("Playlist", back_populates="playlist_tracks")
+    playlist = relationship("Playlist", back_populates="playlist_tracks")
     
     # Track que está en esta posición
-    # track = relationship("Track", back_populates="playlist_tracks")
+    track = relationship("Track", back_populates="playlist_tracks")
     
     # 🚫 RESTRICCIÓN ÚNICA
     # No puede haber la misma canción dos veces en la misma playlist

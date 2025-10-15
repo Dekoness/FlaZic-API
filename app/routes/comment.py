@@ -84,7 +84,7 @@ async def update_comment(
         if comment.user_id != current_user.id:
             raise HTTPException(status_code=403, detail="No tienes permisos para editar este comentario")
         
-        update_data = comment_data.dict(exclude_unset=True)
+        update_data = comment_data.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(comment, field, value)
         
