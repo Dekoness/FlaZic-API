@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime, Boolean
+from sqlalchemy import Column, ForeignKey, Integer, LargeBinary, String, Text, DateTime, Boolean
 from sqlalchemy.sql import func
 from app.database import Base
 from sqlalchemy.orm import relationship
@@ -12,7 +12,10 @@ class Track(Base):
     artist = relationship("User", back_populates="tracks", foreign_keys=[user_id])
     title = Column(String(200), nullable=False, index=True )
     description = Column(Text)
-    audio_url= Column(String(500), nullable=False)
+    audio_url= Column(String(500), nullable=True)
+    audio_filename = Column(String(255), nullable=True)  # Nuevo campo
+    audio_data = Column(LargeBinary, nullable=True)  # Nuevo campo para archivos binarios
+    audio_mimetype = Column(String(100), nullable=True)  # Nuevo campo
     duration_seconds= Column(Integer)
     genre= Column(String(50), index=True)
     bpm= Column(Integer)
@@ -37,6 +40,8 @@ class Track(Base):
             "title": self.title,
             "description": self.description,
             "audio_url": self.audio_url,
+            "audio_filename": self.audio_filename,
+            "has_audio_file": self.audio_data is not None,
             "duration_seconds": self.duration_seconds,
             "genre": self.genre,
             "bpm": self.bpm,

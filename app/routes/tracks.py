@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Path, Query, Response, UploadFile, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
@@ -11,8 +11,20 @@ from app.schemas.track import TrackCreate, TrackUpdate, TrackResponse
 from app.schemas.like import LikeResponse, LikeStats
 from app.schemas.comment import CommentResponse, CommentStats
 from app.utils.security import get_current_user
+import os
+from pathlib import Path as PathLib  # ← Cambiar nombre para evitar conflicto
 
 router = APIRouter(prefix="/tracks", tags=["pistas"])
+
+UPLOAD_DIR = PathLib("uploads/audio")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+ALLOWED_AUDIO_TYPES = {'audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a'}
+
+def allowed_audio_file(file: UploadFile) -> bool:
+    return file.content_type in ALLOWED_AUDIO_TYPES
+
+
+
 
 @router.get("/", response_model=List[TrackResponse])
 async def get_tracks(
@@ -76,6 +88,94 @@ async def get_track(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener track: {str(e)}")
+    
+
+@router.post("/upload-audio", response_model=TrackResponse, status_code=status.HTTP_201_CREATED)
+async def create_track_with_audio(
+    title: str = Form(...),
+    description: Optional[str] = Form(None),
+    genre: Optional[str] = Form(None),
+    bpm: Optional[int] = Form(None),
+    is_public: bool = Form(True),
+    audio_file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """
+    🎯 Crear track con archivo de audio local - Subir tu música desde el dispositivo
+    """
+    try:
+        # Validar tipo de archivo
+        if not allowed_audio_file(audio_file):
+            raise HTTPException(
+                status_code=400, 
+                detail="Tipo de archivo no permitido. Use MP3, WAV, OGG o M4A"
+            )
+        
+        # Leer el archivo
+        audio_content = await audio_file.read()
+        
+        # Crear el track con archivo local
+        new_track = Track(
+            user_id=current_user.id,
+            title=title,
+            description=description,
+            audio_url=None,  # No usar URL externa
+            audio_filename=audio_file.filename,
+            audio_data=audio_content,  # Guardar archivo en BD
+            audio_mimetype=audio_file.content_type,
+            duration_seconds=None,  # Podrías calcular esto después
+            genre=genre,
+            bpm=bpm,
+            is_public=is_public
+        )
+        
+        db.add(new_track)
+        db.commit()
+        db.refresh(new_track)
+        
+        return new_track
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al crear track con audio: {str(e)}")
+    
+@router.get("/{track_id}/audio")
+async def get_track_audio(
+    track_id: int,
+    db: Session = Depends(get_db)
+):
+    """
+    🎯 Obtener archivo de audio del track - Para reproducir la música
+    """
+    try:
+        track = db.query(Track).filter(Track.id == track_id).first()
+        
+        if not track:
+            raise HTTPException(status_code=404, detail="Track no encontrado")
+        
+        if not track.audio_data:
+            raise HTTPException(status_code=404, detail="Este track no tiene archivo de audio")
+        
+        # Incrementar contador de reproducciones
+        track.play_count += 1
+        db.commit()
+        
+        # Devolver archivo de audio
+        return Response(
+            content=track.audio_data,
+            media_type=track.audio_mimetype or "audio/mpeg",
+            headers={
+                "Content-Disposition": f'inline; filename="{track.audio_filename or "audio"}"'
+            }
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error al obtener audio: {str(e)}")
 
 @router.post("/", response_model=TrackResponse, status_code=status.HTTP_201_CREATED)
 async def create_track(
@@ -87,12 +187,21 @@ async def create_track(
     🎯 Crear nuevo track - Como subir tu propia música a la plataforma
     """
     try:
+        # Validar que tenga audio_url o archivo (pero manteniendo compatibilidad)
+        if not track_data.audio_url:
+            raise HTTPException(
+                status_code=400, 
+                detail="Se requiere audio_url para este endpoint. Use /upload-audio para subir archivos."
+            )
         # Crear el track
         new_track = Track(
             user_id=current_user.id,
             title=track_data.title,
             description=track_data.description,
-            audio_url=track_data.audio_url,
+            audio_url=track_data.audio_url,  # URL externa
+            audio_filename=None,
+            audio_data=None,
+            audio_mimetype=None,
             duration_seconds=track_data.duration_seconds,
             genre=track_data.genre,
             bpm=track_data.bpm,
