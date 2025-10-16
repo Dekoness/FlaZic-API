@@ -13,6 +13,14 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: JWT_SECRET_KEY
-        fromSecret: true
+        generateValue: true        # ⬅️ CORREGIDO
       - key: ENVIRONMENT
         value: production
+      - key: CORS_ORIGINS          # ⬅️ NUEVA LÍNEA
+        value: "*"                 # ⬅️ NUEVA LÍNEA
+
+databases:
+  - name: flazic-db
+    plan: free
+    databaseName: flazic
+    user: flazic_user
