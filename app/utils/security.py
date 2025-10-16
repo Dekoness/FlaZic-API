@@ -11,25 +11,17 @@ from app.database import get_db
 from app.models.user import User
 
 # 🔐 OBTENER SALT DEL .env
-ARGON2_SALT = os.getenv("ARGON2_SALT", "default_salt_seguro_cambiar_en_produccion")
 
 # 🔐 CONFIGURACIÓN ARGON2 (más moderno y seguro que bcrypt)
-pwd_context = CryptContext(
-    schemes=["argon2"],
-    deprecated="auto",
-    argon2__time_cost=3,      # Más rápido en desarrollo
-    argon2__memory_cost=65536,# 64MB de memoria
-    argon2__parallelism=1,    # 1 hilo
-    argon2__hash_len=32       # Longitud del hash
-)
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_password_hash(password: str) -> str:
     """Crea hash seguro con Argon2 + Salt del .env"""
-    return pwd_context.hash(password + ARGON2_SALT)
+    return pwd_context.hash(password + settings.JWT_SECRET_KEY)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verifica contraseña con Argon2 + Salt del .env"""
-    return pwd_context.verify(plain_password + ARGON2_SALT, hashed_password)
+    return pwd_context.verify(plain_password + settings.JWT_SECRET_KEY, hashed_password)
 
 # 🎫 JWT (se mantiene igual)
 def create_access_token(data: dict, expires_delta: timedelta = None):
