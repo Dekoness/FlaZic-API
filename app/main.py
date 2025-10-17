@@ -78,3 +78,9 @@ async def health_check():
 @app.get("/api/db-test")
 async def db_test(db: Session = Depends(get_db)):
     return {"message": "✅ Base de datos conectada", "environment": settings.ENVIRONMENT}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.getenv("PORT", 3001))  # Usa PORT de Railway o 3001 por defecto
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=False)
