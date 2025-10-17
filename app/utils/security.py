@@ -9,24 +9,37 @@ import os
 from app.config import settings
 from app.database import get_db
 from app.models.user import User
+import bcrypt
+
+
 
 # 🔐 OBTENER SALT DEL .env
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# 🔐 CONFIGURACIÓN BCRYPT DIRECTA (sin passlib)
 def create_password_hash(password: str) -> str:
-    """Crea hash seguro con bcrypt (trunca si es muy larga)"""
-    # Bcrypt tiene límite de 72 bytes, así que truncamos si es necesario
-    if len(password.encode('utf-8')) > 72:
-        # Truncar a máximo 72 caracteres (no bytes para simplificar)
-        password = password[:72]
-    return pwd_context.hash(password)
+    """Crea hash seguro con bcrypt"""
+    # Codificar la contraseña a bytes
+    password_bytes = password.encode('utf-8')
+    
+    # Generar salt y hash
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    
+    # Devolver como string
+    return hashed.decode('utf-8')
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verifica contraseña con bcrypt"""
-    # Aplicar el mismo truncado para verificación
-    if len(plain_password.encode('utf-8')) > 72:
-        plain_password = plain_password[:72]
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        # Convertir a bytes
+        password_bytes = plain_password.encode('utf-8')
+        hash_bytes = hashed_password.encode('utf-8')
+        
+        # Verificar
+        return bcrypt.checkpw(password_bytes, hash_bytes)
+    except Exception:
+        return False
 
 # 🎫 JWT (se mantiene igual)
 def create_access_token(data: dict, expires_delta: timedelta = None):
