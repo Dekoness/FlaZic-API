@@ -175,7 +175,7 @@ async def delete_track(
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error al eliminar track: {str(e)}")
 
-@router.post("/{track_id}/like", response_model=LikeResponse)
+@router.post("/{track_id}/like", response_model=None)
 async def toggle_like(
     track_id: int,
     db: Session = Depends(get_db),

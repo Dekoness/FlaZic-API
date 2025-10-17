@@ -49,7 +49,7 @@ class PlaylistResponse(PlaylistBase):
     track_count: int= 0
     total_duration: Optional[int] = None
     dj: Optional[UserResponse]=None
-    tracks: List[PlaylistTrackResponse] = []
+    playlist_tracks: List[PlaylistTrackResponse] = []
     
     class Config:
         from_attributes = True
