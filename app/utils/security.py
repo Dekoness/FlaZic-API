@@ -17,12 +17,16 @@ def create_password_hash(password: str) -> str:
     """Crea hash seguro con bcrypt (trunca si es muy larga)"""
     # Bcrypt tiene límite de 72 bytes, así que truncamos si es necesario
     if len(password.encode('utf-8')) > 72:
-        password = password[:72]  # Truncar a 72 caracteres
+        # Truncar a máximo 72 caracteres (no bytes para simplificar)
+        password = password[:72]
     return pwd_context.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verifica contraseña con bcrypt"""
-    return pwd_context.verify(plain_password, hashed_password)  # ← ELIMINA el + ARGON2_SALT
+    # Aplicar el mismo truncado para verificación
+    if len(plain_password.encode('utf-8')) > 72:
+        plain_password = plain_password[:72]
+    return pwd_context.verify(plain_password, hashed_password)
 
 # 🎫 JWT (se mantiene igual)
 def create_access_token(data: dict, expires_delta: timedelta = None):
