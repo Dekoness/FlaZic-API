@@ -14,8 +14,11 @@ from app.models.user import User
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_password_hash(password: str) -> str:
-    """Crea hash seguro con bcrypt (salt automático)"""
-    return pwd_context.hash(password)  # ← ELIMINA el + ARGON2_SALT
+    """Crea hash seguro con bcrypt (trunca si es muy larga)"""
+    # Bcrypt tiene límite de 72 bytes, así que truncamos si es necesario
+    if len(password.encode('utf-8')) > 72:
+        password = password[:72]  # Truncar a 72 caracteres
+    return pwd_context.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verifica contraseña con bcrypt"""
