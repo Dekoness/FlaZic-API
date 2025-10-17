@@ -30,3 +30,5 @@ env/
 # Archivos temporales
 *.tmp
 *.temp
+
+run.py
