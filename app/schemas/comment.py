@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, validator, model_validator
 from typing import Optional, List
 from datetime import datetime
 from app.schemas.user import UserResponse
@@ -15,14 +15,14 @@ class CommentCreate(CommentBase):
 
  
     
-    @field_validator('content')
+    @validator('content')
     def content_not_empty(cls, v):
         """Valida que el contenido no esté vacío"""
         if not v.strip():
             raise ValueError('El comentario no puede estar vacío')
         return v.strip()
     
-    @field_validator('timestamp_seconds')
+    @validator('timestamp_seconds')
     def validate_timestamp(cls, v):
         """Valida que el timestamp sea positivo"""
         if v is not None and v < 0:

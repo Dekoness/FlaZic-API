@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, validator
 from typing import Optional
 from datetime import datetime
 from app.models.social_link import SocialLink
@@ -11,7 +11,7 @@ class SocialLinkBase(BaseModel):
 class SocialLinkCreate(SocialLinkBase):
     """Datos para CREAR un nuevo enlace social"""
     
-    @field_validator('platform')
+    @validator('platform')
     def validate_platform(cls, v):
         """Valida que la plataforma sea soportada"""
         valid_platforms = [
@@ -23,7 +23,7 @@ class SocialLinkCreate(SocialLinkBase):
             raise ValueError(f'Plataforma no soportada. Usa: {", ".join(valid_platforms)}')
         return v.lower()
     
-    @field_validator('url')
+    @validator('url')
     def validate_url(cls, v):
         """Valida que la URL sea válida para la plataforma"""
         if not v.startswith(('http://', 'https://')):
