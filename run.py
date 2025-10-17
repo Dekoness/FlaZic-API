@@ -19,6 +19,6 @@ if __name__ == "__main__":
         "app.main:app",
         host=host,
         port=port,
-        reload=True,  # Auto-recarga en desarrollo
+        reload=False,  # Auto-recarga en desarrollo
         log_level="info"
     )
