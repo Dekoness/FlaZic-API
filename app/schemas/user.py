@@ -6,7 +6,7 @@ from datetime import datetime
 
 class UserBase(BaseModel):
     username:str
-    email: EmailStr
+    email: str
     display_name : Optional[str] = None
 
 class UserCreate(UserBase):
