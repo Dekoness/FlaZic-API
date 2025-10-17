@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from typing import Optional
 from datetime import datetime
 from app.schemas.user import UserResponse
@@ -13,7 +13,7 @@ class NotificationBase(BaseModel):
 class NotificationCreate(NotificationBase):
     """Datos para CREAR una nueva notificación"""
     
-    @validator('type')
+    @field_validator('type')
     def validate_type(cls, v):
         """Valida que el tipo de notificación sea soportado"""
         valid_types = ['follow', 'like', 'comment', 'track_comment', 'new_track']

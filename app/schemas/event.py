@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator, HttpUrl
+from pydantic import BaseModel, field_validator, HttpUrl
 from typing import Optional
 from datetime import datetime
 from app.schemas.user import UserResponse
@@ -16,14 +16,14 @@ class EventBase(BaseModel):
 class EventCreate(EventBase):
     """Datos para CREAR un nuevo evento"""
     
-    @validator('event_date')
+    @field_validator('event_date')
     def event_date_must_be_future(cls, v):
         """Valida que la fecha del evento sea futura"""
         if v <= datetime.now():
             raise ValueError('La fecha del evento debe ser futura')
         return v
     
-    @validator('event_url')
+    @field_validator('event_url')
     def validate_event_url(cls, v):
         """Valida que la URL sea válida si se proporciona"""
         if v and not v.startswith(('http://', 'https://')):
