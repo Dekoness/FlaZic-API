@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, validator
 from typing import Optional
 from datetime import datetime
 from app.schemas.user import UserResponse
@@ -11,7 +11,7 @@ class FollowerBase(BaseModel):
 class FollowerCreate(FollowerBase):
     """Datos para CREAR un nuevo seguimiento"""
     
-    @field_validator('follower_id', 'following_id')
+    @validator('follower_id', 'following_id')
     def ids_must_be_different(cls, v, info):
         """Valida que no te puedas seguir a ti mismo"""
         values = info.data

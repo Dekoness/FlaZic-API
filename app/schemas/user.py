@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, validator
 from typing import Optional
 from datetime import datetime
 
@@ -13,13 +13,13 @@ class UserCreate(UserBase):
     password: str
     password_confirm: str
 
-    @field_validator('password')
+    @validator('password')
     def password_strength(cls, v):
         if len(v) < 6:
             raise ValueError('La contraseña debe tener al menos 6 caracteres')
         return v
     
-    @field_validator('password_confirmation')
+    @validator('password_confirmation')
     def passwords_match(cls, v, values):
         if 'password' in values and values['password'] != v:
             raise ValueError('Las contraseñas no coinciden')
