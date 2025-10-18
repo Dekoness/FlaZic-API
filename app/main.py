@@ -42,7 +42,7 @@ app.include_router(tracks.router)
 app.include_router(follow.router)
 app.include_router(comment.router)
 app.include_router(playlists.router)
-# app.include_router(notifications.router)
+app.include_router(notifications.router)
 # app.include_router(events.router)
 # app.include_router(social_links.router)
 

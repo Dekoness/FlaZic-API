@@ -38,10 +38,10 @@ class Notification(Base):
     # 🔗 RELACIONES
     
     # Usuario que recibe la notificación
-    # recipient = relationship("User", foreign_keys=[user_id], back_populates="notifications_received")
+    recipient = relationship("User", foreign_keys=[user_id], back_populates="notifications_received")
     
     # Usuario que causó la notificación
-    # sender = relationship("User", foreign_keys=[from_user_id], back_populates="notifications_sent")
+    sender = relationship("User", foreign_keys=[from_user_id], back_populates="notifications_sent")
     
     def __repr__(self):
         """Cómo se muestra esta notificación en los logs"""

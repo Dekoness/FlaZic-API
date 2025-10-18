@@ -28,13 +28,13 @@ class User(Base):
     playlists = relationship("Playlist", back_populates="dj", cascade="all, delete-orphan")
     comments = relationship("Comment", back_populates="author", cascade="all, delete-orphan")
 
-    # notifications_received = relationship("Notification",  foreign_keys=[Notification.user_id], 
-    #                                       back_populates="recipient",
-    #                                       cascade="all, delete-orphan")
-    # notifications_sent = relationship("Notification",
-    #                                     foreign_keys=[Notification.from_user_id],
-    #                                     back_populates="sender",
-    #                                     cascade="all, delete-orphan")
+    notifications_received = relationship("Notification",  foreign_keys=[Notification.user_id], 
+                                          back_populates="recipient",
+                                          cascade="all, delete-orphan")
+    notifications_sent = relationship("Notification",
+                                        foreign_keys=[Notification.from_user_id],
+                                        back_populates="sender",
+                                        cascade="all, delete-orphan")
 
     followers = relationship("Follower", foreign_keys=[Follower.following_id], 
                             back_populates="following",
