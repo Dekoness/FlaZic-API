@@ -209,3 +209,30 @@ async def get_user_stats(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener estadísticas: {str(e)}")
+    
+
+
+@router.delete("/users/{user_id}")
+async def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Eliminar usuario (solo admin o propio usuario)"""
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        
+        # Verificar permisos (solo admin o el propio usuario)
+        if current_user.id != user_id and not current_user.is_admin:
+            raise HTTPException(status_code=403, detail="No tienes permisos")
+        
+        db.delete(user)
+        db.commit()
+        
+        return {"message": "Usuario eliminado correctamente"}
+        
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error al eliminar usuario: {str(e)}")
