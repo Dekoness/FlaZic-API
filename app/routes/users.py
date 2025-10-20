@@ -225,7 +225,7 @@ async def delete_user(
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
         
         # Verificar permisos (solo admin o el propio usuario)
-        if current_user.id != user_id and not current_user.is_admin:
+        if current_user.id != user_id or not current_user.is_admin:
             raise HTTPException(status_code=403, detail="No tienes permisos")
         
         db.delete(user)
