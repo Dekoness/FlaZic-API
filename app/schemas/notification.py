@@ -31,7 +31,7 @@ class NotificationResponse(NotificationBase):
     is_read: bool
     created_at: datetime
     message: str  # Mensaje formateado
-    icon: str  # Emoji del icono
+    icon: Optional[str]=None  # Emoji del icono
     sender: UserResponse  # Quién causó la notificación
     
     class Config:

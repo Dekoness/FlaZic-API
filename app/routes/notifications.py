@@ -6,7 +6,9 @@ from app.database import get_db
 from app.models.notification import Notification
 from app.models.user import User
 from app.schemas.notification import NotificationResponse, NotificationStats
+from app.schemas.user import UserResponse
 from app.utils.security import get_current_user
+
 
 router = APIRouter(prefix="/notifications", tags=["notificaciones"])
 
@@ -28,7 +30,26 @@ async def get_notifications(
             query = query.filter(Notification.is_read == False)
         
         notifications = query.order_by(Notification.created_at.desc()).offset(skip).limit(limit).all()
-        return notifications
+        response_notifications = []
+        for notification in notifications:
+            # Obtener el usuario remitente manualmente
+            sender_user = db.query(User).filter(User.id == notification.from_user_id).first()
+            
+            notification_data = {
+                "id": notification.id,
+                "user_id": notification.user_id,
+                "from_user_id": notification.from_user_id,
+                "type": notification.type,
+                "target_id": notification.target_id,
+                "is_read": notification.is_read,
+                "created_at": notification.created_at,
+                "message": notification.get_message(),
+                "icon": notification.get_icon(),
+                "sender": UserResponse.from_orm(sender_user) if sender_user else None
+            }
+            response_notifications.append(notification_data)
+        
+        return response_notifications
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener notificaciones: {str(e)}")
@@ -51,11 +72,26 @@ async def mark_notification_read(
         if not notification:
             raise HTTPException(status_code=404, detail="Notificación no encontrada")
         
-        notification.mark_as_read()
+        notification.is_read = True
         db.commit()
-        db.refresh(notification)
+
+        sender_user = db.query(User).filter(User.id == notification.from_user_id).first()
         
-        return notification
+        # Construir la respuesta manualmente
+        notification_response = NotificationResponse(
+            id=notification.id,
+            user_id=notification.user_id,
+            from_user_id=notification.from_user_id,
+            type=notification.type,
+            target_id=notification.target_id,
+            is_read=notification.is_read,
+            created_at=notification.created_at,
+            message=notification.get_message(),
+            icon=notification.get_icon(),
+            sender=UserResponse.from_orm(sender_user) if sender_user else None
+        )
+        
+        return notification_response
         
     except HTTPException:
         raise
