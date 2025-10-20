@@ -1,5 +1,9 @@
 ((EN DESARROLLO))
 
+
+Si quieres probarla aqui: https://flazic-api-production.up.railway.app/docs
+
+
 🎵 Flazic API - Backend para Plataforma Musical
 Backend API para una aplicación web de música destinada a oyentes y artistas emergentes. Desarrollado con FastAPI y SQLAlchemy.
 
@@ -20,7 +24,7 @@ Framework: FastAPI
 
 Base de Datos: SQLite (Desarrollo) + SQLAlchemy ORM
 
-Autenticación: JWT + Argon2
+Autenticación: JWT
 
 Documentación: Auto-generada en /docs
 
