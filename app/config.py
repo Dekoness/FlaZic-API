@@ -8,7 +8,14 @@ class Settings:
     JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
     JWT_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES",60))
 
-    DATABASE_URL = os.getenv("SUPABASE_URL", "sqlite:///./flazic.db")
+    # Usar DSN real de Postgres si existe
+    DATABASE_URL = (
+        os.getenv("DATABASE_URL") or
+        os.getenv("POSTGRES_URL") or
+        os.getenv("POSTGRES_PRISMA_URL") or
+        os.getenv("POSTGRES_URL_NON_POOLING") or
+        "sqlite:///./flazic.db"
+    )
     SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
 
     APP_NAME = os.getenv("APP_NAME", "FLAZIC-API")
