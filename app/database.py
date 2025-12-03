@@ -4,7 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from app.config import settings
 
 engine = create_engine(
-    settings.DATABASE_URL
+    settings.DATABASE_URL,
+    settings.SUPABASE_SERVICE_KEY
 )
 
 # ,
