@@ -8,7 +8,7 @@ class Settings:
     JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
     JWT_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES",60))
 
-    DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./flazic.db")
+    DATABASE_URL = os.getenv("SUPABASE_URL", "sqlite:///./flazic.db")
     SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
 
     APP_NAME = os.getenv("APP_NAME", "FLAZIC-API")
