@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 from .config import settings
 
 engine = None
@@ -14,13 +15,12 @@ def init_engine():
     try:
         engine = create_engine(
             settings.DATABASE_URL,
+            poolclass=NullPool,      # serverless: sin pool
             pool_pre_ping=True,
-            pool_recycle=300,
         )
         SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
         print(f"[DB] Connected using {settings.DATABASE_URL.split('?')[0]}")
     except Exception as e:
-        # Loguea la causa real en Vercel
         import traceback; traceback.print_exc()
         raise
 
