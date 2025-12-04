@@ -1,12 +1,15 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.routes import users, tracks, follow, comment, events, notifications, playlists, social_links
 from app.routes.auth import router as auth_router
 from app.database import create_tables
 from .database import init_engine
+from sqlalchemy import text
+from app.models.user import User
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -82,4 +85,21 @@ async def db_test(db: Session = Depends(get_db)):
     """Prueba que la base de datos funciona"""
     # db es tu "ayudante de cocina" listo para trabajar
     return {"message": "✅ Base de datos conectada", "db_type": str(type(db))}
+
+@app.get("/api/db-users-count")
+async def db_users_count(db: Session = Depends(get_db)):
+    try:
+        total = db.query(User).count()
+        return {"ok": True, "users": total}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"ok": False, "error": str(e)})
+
+@app.get("/api/db-users-table")
+async def db_users_table(db: Session = Depends(get_db)):
+    try:
+        # Intenta seleccionar para ver si la tabla existe y columnas están bien
+        rows = db.execute(text("SELECT id, username, email, created_at FROM users LIMIT 1")).fetchall()
+        return {"ok": True, "sample": [dict(r) for r in rows]}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"ok": False, "error": str(e)})
 
