@@ -12,6 +12,8 @@ from app.utils.security import (
     verify_token
 )
 from datetime import timedelta
+import traceback, logging
+log = logging.getLogger("flazic")
 
 
 router = APIRouter(prefix="/auth", tags=["autentificacion"])
@@ -19,30 +21,37 @@ security = HTTPBearer()
 
 @router.post("/register", response_model=UserResponse, response_model_exclude_none=True, status_code=201)
 async def register(user_data: UserCreate, db: Session = Depends(get_db)):
-    existing_user = db.query(User).filter(
-        (User.username == user_data.username) | (User.email == user_data.email)
-    ).first()
-    if existing_user:
-        if existing_user.username == user_data.username:
-            raise HTTPException(status_code=400, detail="Este nombre de usuario ya está registrado")
-        else:
-            raise HTTPException(status_code=400, detail="Este email ya está registrado")
+    try:
+        existing_user = db.query(User).filter(
+            (User.username == user_data.username) | (User.email == user_data.email)
+        ).first()
+        if existing_user:
+            if existing_user.username == user_data.username:
+                raise HTTPException(status_code=400, detail="Este nombre de usuario ya está registrado")
+            else:
+                raise HTTPException(status_code=400, detail="Este email ya está registrado")
 
-    new_user = User(
-        username=user_data.username,
-        email=user_data.email,
-        display_name=user_data.display_name or user_data.username,
-        password_hash=create_password_hash(user_data.password),
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+        new_user = User(
+            username=user_data.username,
+            email=user_data.email,
+            display_name=user_data.display_name or user_data.username,
+            password_hash=create_password_hash(user_data.password),
+        )
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
 
-    # Asegura valores generados por el servidor
-    if new_user.created_at is None:
-        new_user = db.query(User).filter(User.id == new_user.id).first()
+        # Asegura valores generados por el servidor
+        if new_user.created_at is None:
+            new_user = db.query(User).filter(User.id == new_user.id).first()
 
-    return UserResponse.model_validate(new_user)
+        return UserResponse.model_validate(new_user)
+    except HTTPException:
+        raise
+    except Exception as e:
+        traceback.print_exc()
+        log.error(f"Register failed: {e}")
+        raise HTTPException(status_code=500, detail="Register failed")
 
 @router.post("/login")
 async def login(login_data: UserLogin, db: Session = Depends(get_db)):
