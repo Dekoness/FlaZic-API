@@ -6,16 +6,18 @@ from app.database import get_db
 from app.routes import users, tracks, follow, comment, events, notifications, playlists, social_links
 from app.routes.auth import router as auth_router
 from app.database import create_tables
-
-
-
-
+from .database import init_engine
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("🚀 Iniciando FLAZIC-API...")
     print("✅ FLAZIC-API lista para recibir peticiones")
     
+    try:
+        init_engine()
+    except Exception:
+        # Deja trazas en logs y evita ocultar el error
+        raise
     try:
         create_tables()
         print("✅ Tablas creadas exitosamente")
